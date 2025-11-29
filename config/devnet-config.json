@@ -1,6 +1,0 @@
-{
-  "NetworkName": "yaci-devnet",
-  "BlockTime": 1,
-  "SlotsPerKES": 60,
-  "KesKeyRotationPeriod": 10
-}

@@ -1,0 +1,8 @@
+{
+  "HasEKG": true,
+  "TraceForwarding": false,
+  "Logging": {
+    "minSeverity": "Info",
+    "selectors": []
+  }
+}

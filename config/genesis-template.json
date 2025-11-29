@@ -1,0 +1,14 @@
+{
+  "systemStart": "1970-01-01T00:00:00Z",
+  "networkMagic": 42,
+  "protocolParams": {
+    "maxTxSize": 16384
+  },
+  "initialReserves": {},
+  "protocolVersion": {
+    "major": 2,
+    "minor": 0
+  },
+  "slotLength": 1,
+  "epochLength": 432000
+}
