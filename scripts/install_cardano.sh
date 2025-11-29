@@ -12,19 +12,15 @@ curl -L -o node.tar.gz "$DOWNLOAD_URL"
 tar -xzf node.tar.gz
 rm node.tar.gz
 
-# Find the extracted directory (they change names sometimes)
-EXTRACTED_DIR=$(find . -maxdepth 1 -type d -name "cardano-node*" | head -n 1)
-
-if [ -z "$EXTRACTED_DIR" ]; then
-  echo "[ERROR] Could not find extracted cardano-node directory!"
+# Verify binaries
+if [ ! -f "./cardano-node" ] || [ ! -f "./cardano-cli" ]; then
+  echo "[ERROR] cardano-node or cardano-cli not found after extraction!"
+  echo "[DEBUG] Listing directory:"
+  ls -al
   exit 1
 fi
 
-echo "[Cardano] Moving binaries to /opt/cardano"
-mv "$EXTRACTED_DIR"/cardano-node ./
-mv "$EXTRACTED_DIR"/cardano-cli ./
+chmod +x ./cardano-node ./cardano-cli
 
-chmod +x cardano-node cardano-cli
-
-echo "[Cardano] Successfully installed."
+echo "[Cardano] Installed successfully."
 export PATH="/opt/cardano:$PATH"
