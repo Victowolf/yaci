@@ -14,12 +14,12 @@ echo "[STEP] Initializing devnet configs..."
 bash scripts/init_network.sh
 
 echo "[STEP] Starting Yaci DevKit..."
-./yaci/bin/devkit.sh start &
+/opt/yaci/yaci-demos/bin/devkit.sh start &
 
 sleep 5
 
 echo "[STEP] Creating & starting node..."
-yaci-cli create-node -o --start || true
+/opt/yaci/yaci-demos/bin/yaci-cli create-node -o --start || true
 
 echo "[DONE] Node is running. Streaming logs..."
 tail -f /work/node.log || true

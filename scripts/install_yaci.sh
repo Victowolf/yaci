@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[YACI] Installing Yaci DevKit via npm..."
+echo "[YACI] Downloading Yaci DevKit (runnable demo version)..."
 
-# Install Node + npm
-apt-get update && apt-get install -y nodejs npm
+INSTALL_DIR="/opt/yaci"
+mkdir -p "$INSTALL_DIR"
+cd "$INSTALL_DIR"
 
-# Install Yaci DevKit CLI globally
-npm install -g @bloxbean/yaci-devkit
+# Clone official runnable version
+git clone https://github.com/bloxbean/yaci-devkit-demos.git yaci-demos
 
-# Ensure PATH
+cd yaci-demos
+
+chmod +x bin/devkit.sh
+
 echo "[YACI] Yaci DevKit installed."
-which devkit || echo "[WARN] devkit not found in PATH"
-which yaci-cli || echo "[WARN] yaci-cli not found in PATH"
-
-export PATH="/usr/local/bin:$PATH"
+export PATH="$INSTALL_DIR/yaci-demos/bin:$PATH"
