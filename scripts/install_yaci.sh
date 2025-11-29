@@ -1,18 +1,34 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "[YACI] Downloading Yaci DevKit (runnable demo version)..."
+echo "[YACI] Downloading Yaci DevKit (runnable demo version ZIP)..."
 
 INSTALL_DIR="/opt/yaci"
 mkdir -p "$INSTALL_DIR"
 cd "$INSTALL_DIR"
 
-# Clone official runnable version
-git clone https://github.com/bloxbean/yaci-devkit-demos.git yaci-demos
+ZIP_URL="https://codeload.github.com/bloxbean/yaci-devkit-demos/zip/refs/heads/master"
 
-cd yaci-demos
+curl -L -o yaci.zip "$ZIP_URL"
+unzip yaci.zip
+rm yaci.zip
 
-chmod +x bin/devkit.sh
+# auto-detect the extracted folder
+EXTRACTED_DIR=$(find . -maxdepth 1 -type d -name "yaci-devkit-demos*" | head -n 1)
 
-echo "[YACI] Yaci DevKit installed."
-export PATH="$INSTALL_DIR/yaci-demos/bin:$PATH"
+if [ -z "$EXTRACTED_DIR" ]; then
+  echo "[ERROR] Could not find extracted Yaci DevKit demos folder!"
+  ls -al
+  exit 1
+fi
+
+echo "[YACI] Found folder: $EXTRACTED_DIR"
+
+# Move to standard location
+mv "$EXTRACTED_DIR" yaci-demos
+
+chmod +x yaci-demos/bin/devkit.sh
+chmod +x yaci-demos/bin/yaci-cli
+
+echo "[YACI] Installed DevKit at /opt/yaci/yaci-demos"
+export PATH="/opt/yaci/yaci-demos/bin:$PATH"
