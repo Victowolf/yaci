@@ -1,0 +1,62 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: yaci-devkit-job
+spec:
+  backoffLimit: 3
+  template:
+    metadata:
+      labels:
+        app: yaci-devkit
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: yaci-container
+        image: ubuntu:22.04
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            set -e
+
+            echo "[k8s] Updating & installing dependencies..."
+            apt update && apt install -y git curl wget unzip jq python3 python3-pip socat ca-certificates && \
+            rm -rf /var/lib/apt/lists/*
+
+            echo "[k8s] Ensuring /app exists..."
+            mkdir -p /app
+
+            echo "[k8s] Cloning repo..."
+            if [ ! -d /app/.git ]; then
+              git clone https://github.com/YOUR_NAME/YOUR_REPO.git /app
+            else
+              cd /app && git pull
+            fi
+
+            echo "[k8s] Switching to repo directory..."
+            cd /app
+            chmod +x start.sh
+
+            echo "[k8s] Running start.sh..."
+            ./start.sh
+
+        ports:
+          - containerPort: 3001
+          - containerPort: 3002
+          - containerPort: 1337   # If Yaci DevKit exposes Ogmios/HTTP
+
+        resources:
+          limits:
+            nvidia.com/mig-2g.35gb: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yaci-devkit-service
+spec:
+  selector:
+    app: yaci-devkit
+  type: NodePort
+  ports:
+    - port: 1337
+      targetPort: 1337
+      nodePort: 30337
