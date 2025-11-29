@@ -12,15 +12,19 @@ curl -L -o node.tar.gz "$DOWNLOAD_URL"
 tar -xzf node.tar.gz
 rm node.tar.gz
 
-# Verify binaries
-if [ ! -f "./cardano-node" ] || [ ! -f "./cardano-cli" ]; then
-  echo "[ERROR] cardano-node or cardano-cli not found after extraction!"
-  echo "[DEBUG] Listing directory:"
-  ls -al
+# Detect binaries under /opt/cardano/bin/*
+if [ -f "./bin/cardano-node" ] && [ -f "./bin/cardano-cli" ]; then
+  echo "[Cardano] Found binaries in /opt/cardano/bin/"
+  chmod +x ./bin/cardano-node ./bin/cardano-cli
+
+  # Move to top level for easy PATH usage
+  mv ./bin/cardano-node ./
+  mv ./bin/cardano-cli ./
+else
+  echo "[ERROR] cardano-node or cardano-cli not found under bin/!"
+  ls -R .
   exit 1
 fi
-
-chmod +x ./cardano-node ./cardano-cli
 
 echo "[Cardano] Installed successfully."
 export PATH="/opt/cardano:$PATH"
